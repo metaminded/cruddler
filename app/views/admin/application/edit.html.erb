@@ -1,0 +1,12 @@
+<h1 class="page_title"><%= t(locale_key('edit'), :name => name_for(instance_variable_get("@#{resource_name}"))) %></h1>
+
+<%#= render(:partial => "#{resource_name}") %>
+
+<%=
+  render(:partial => "edit_#{resource_name}") \
+  rescue render(:partial => "form") \
+  rescue render(:partial => "#{resource_name}") \
+  rescue "** No template found, create either 'edit_#{resource_name}', '#{resource_name}', or 'form' partial. **"
+%>
+
+<%= link_to t("cruddler.abort"), current_index_path %>

@@ -1,0 +1,5 @@
+pkg
+tabulatr-*.gem
+Gemfile.lock
+.bundle
+spec/dummy_app/tmp/*
