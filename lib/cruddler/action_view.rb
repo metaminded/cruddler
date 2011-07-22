@@ -102,26 +102,26 @@ class ActionController::Base
 
     define_method :current_index_path do
       if nested
-        edit_polymorphic_path(current_path_components()<<cruddler_get_nested)
+        edit_polymorphic_path(current_path_components(cruddler_get_nested))
       else
-        polymorphic_path(current_path_components()<<resources_name)
+        polymorphic_path(current_path_components(resources_name))
       end
     end
 
     define_method :current_show_path do |obj|
-      polymorphic_path(current_path_components()<<obj)
+      polymorphic_path(current_path_components(obj))
     end
 
     define_method :current_edit_path do |obj|
-      edit_polymorphic_path(current_path_components()<<obj)
+      edit_polymorphic_path(current_path_components(cruddler_get_nested,obj))
     end
 
     define_method :current_new_path do
-      new_polymorphic_path(current_path_components()<<resource_name)
+      new_polymorphic_path(current_path_components(resource_name))
     end
 
     define_method :locale_key do |str|
-      (['cruddler'] + current_path_components << resource_name << str).join(".")
+      (['cruddler'] + current_path_components(resource_name,str)).join(".")
     end
 
     define_method :name_for do |record|
@@ -131,10 +131,9 @@ class ActionController::Base
       end
     end
 
-    define_method :current_path_components do
-      return @current_path_components if @current_path_components
-      l = self.class.to_s.split("::").map(&:tableize).map(&:singularize)
-      @current_path_components = l[0..-2]
+    define_method :current_path_components do |*args|
+      @current_path_components ||= self.class.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
+      (@current_path_components + args).compact
     end
 
     helper_method :resource_name, :resources_name,
