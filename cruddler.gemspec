@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "cruddler/version"
 
 Gem::Specification.new do |s|
-  s.name        = "tabulatr"
+  s.name        = "cruddler"
   s.version     = Cruddler::VERSION.dup
   s.platform    = Gem::Platform::RUBY
   s.summary     = "lazy coders"
@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
   s.rdoc_options  = ['--charset=UTF-8']
 
 
-  s.add_runtime_dependency('rails', '~> 3.1')
+  s.add_runtime_dependency('rails', '~> 3.1.0.rc4')
 end
