@@ -42,7 +42,7 @@ class ActionController::Base
       instance_variable_set(nam, t)
       if success
         flash[:notice] = t(locale_key("update_success"))
-        redirect_to current_edit_path(t)
+        redirect_to current_index_path()
       else
         flash[:alert] = t(locale_key("update_problem"))
         render :edit

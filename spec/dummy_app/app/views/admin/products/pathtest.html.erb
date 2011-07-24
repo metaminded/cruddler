@@ -1,0 +1,3 @@
+<% [:resource_name, :resources_name, :current_index_path, :current_show_path, :current_new_path].each do |k| %>
+<div id="<%= k %>"><%= self.send k %></div>
+<% end %>
