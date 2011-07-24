@@ -2,9 +2,9 @@
 
 <%=
   render(:partial => "show_#{resource_name}") \
-  rescue render(:partial => "form") \
-  rescue render(:partial => "#{resource_name}") \
-  rescue "** No template found, create either 'edit_#{resource_name}', '#{resource_name}', or 'form' partial. **"
+  rescue ActionView::MissingTemplate render(:partial => "form") \
+  rescue ActionView::MissingTemplate render(:partial => "#{resource_name}") \
+  rescue ActionView::MissingTemplate "** No template found, create either 'edit_#{resource_name}', '#{resource_name}', or 'form' partial. **"
 %>
 
 <%= link_to t("cruddler.abort"), current_index_path %>

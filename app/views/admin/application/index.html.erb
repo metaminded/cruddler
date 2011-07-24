@@ -2,9 +2,9 @@
 
 <%=
   render(:partial => "list_#{resources_name}") \
-  rescue render(:partial => "#{resources_name}") \
-  rescue render(:partial => "listing") \
-  rescue "** No template found, create either 'list_#{resources_name}', '#{resources_name}', or 'listing' partial. **"
+  rescue ActionView::MissingTemplate render(:partial => "#{resources_name}") \
+  rescue ActionView::MissingTemplate render(:partial => "listing") \
+  rescue ActionView::MissingTemplate "** No template found, create either 'list_#{resources_name}', '#{resources_name}', or 'listing' partial. **"
 %>
 
 <%= link_to t(locale_key(:create)), current_new_path() %>
