@@ -3,7 +3,7 @@
 class ActionController::Base
 
   def self.cruddler(methods, opts={})
-    klass = opts[:class] || self.to_s.split("::").last.split("sController").first.constantize
+    klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
     nested = opts[:nested].present? ? opts[:nested].to_s : nil
     nested_class = nested ? nested.classify.constantize : nil
@@ -16,9 +16,9 @@ class ActionController::Base
     define_method :index do
       if nested
         n = cruddler_get_nested
-        instance_variable_set(nam+"s", n.send(klass_name.pluralize).find_for_table(params))
+        instance_variable_set(nam.pluralize, n.send(klass_name.pluralize).find_for_table(params))
       else
-        instance_variable_set(nam+"s", klass.find_for_table(params))
+        instance_variable_set(nam.pluralize, klass.find_for_table(params))
       end
     end if methods.member? :index
 
