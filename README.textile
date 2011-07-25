@@ -1,0 +1,58 @@
+h1. Cruddler - CRUD admin controllers for lazy programmers
+
+NOTE: This is currently in in-house-testing-and-developing state. Feel free to use, but don't complain if it doesn't fit your needs. Feedback is welcome, though.
+
+h2. Mission Objective
+
+I was sick of implementing edit, show, index, ... actions over and over again, and wasn't too enthusiastic about resource_controller and the like for they are way to overengineered.
+
+The same annoyance I found in implementing the corresponding view.
+
+And now, Rails 3.1 is there with view inheritance.
+
+h2. Controller
+
+just write
+
+<pre>
+  cruddler :all
+</pre>
+
+into your controller, or replace <tt>:all</tt> with a list of the actions you want to generate. 
+
+If the class can't be guessed from the controller name, pass a <tt>:class => MyClass</tt> option.
+
+If the current resource is nested, pass <tt>:nested => :master_model</tt>, deep nesting is about to come.
+
+h2. Views
+
+Just implement <tt>_model_name</tt> and <tt>_listing</tt> partials, the rest is done magically. If your edit or new actions need to be more specific, you can override with <tt>_edit_model_name</tt> or <tt>_new_model_name</tt>.
+
+h2. Some words of wisdom
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+h3. Other, new bugs
+
+There are roughly another 997 bugs in Tabulatr, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/provideal/tabulatr/issues">GitHub Bugtracker</a>.
+
+h2. Contributing to tabulatr
+
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
+* Check out the <a href="https://github.com/provideal/tabulatr/issues">issue tracker</a> to make sure someone already hasn't requested it and/or contributed it
+* Fork the project
+* Start a feature/bugfix branch
+* Commit and push until you are happy with your contribution
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Feel free to send a pull request if you think others (me, for example) would like to have your change incorporated into future versions of tabulatr.
+
+h2. License
+
+Copyright (c) 2010-2011 Peter Horn, <a href="http://www.provideal.net" target="_blank">Provideal GmbH</a>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
