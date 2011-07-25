@@ -24,17 +24,21 @@ If the class can't be guessed from the controller name, pass a <tt>:class => MyC
 
 If the current resource is nested, pass <tt>:nested => :master_model</tt>, deep nesting is about to come.
 
+We intentionally don't offer any callbacks or the like, for typical CRUD actions are sufficiently simple to just implement them if they are non-standard. So -- It you're not happy with what cruddler generated, just implement your action 'by hand'.
+
 h2. Views
 
 Just implement <tt>_model_name</tt> and <tt>_listing</tt> partials, the rest is done magically. If your edit or new actions need to be more specific, you can override with <tt>_edit_model_name</tt> or <tt>_new_model_name</tt>.
 
+As with the controllers, we don't offer fancy customization options. If you don't like the views, go to the cruddler gem, copy the views into your project, and customize them to your needs.
+
 h2. Some words of wisdom
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. :)
 
-h3. Other, new bugs
+h3. Bugs
 
-There are roughly another 997 bugs in Tabulatr, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/provideal/cruddler/issues">GitHub Bugtracker</a>.
+There may be lots of bugs in cruddler, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/provideal/cruddler/issues">GitHub Bugtracker</a>.
 
 h2. Contributing to cruddler
 
