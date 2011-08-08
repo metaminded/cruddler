@@ -7,7 +7,7 @@ class ActionController::Base
     klass_name = klass.to_s.tableize
     nested = opts[:nested].present? ? opts[:nested].to_s : nil
     nested_class = nested ? nested.classify.constantize : nil
-    methods = [:index, :show, :edit, :update, :new, :create] if methods == :all
+    methods = [:index, :show, :edit, :update, :new, :create, :delete] if methods == :all
     methods = [methods] unless methods.is_a?(Array)
     pnam = klass.to_s.tableize.singularize
     nam = "@" + pnam
@@ -83,7 +83,7 @@ class ActionController::Base
       s.destroy
       flash[:notice] = t(locale_key("delete_success"))
       redirect_to current_index_path()
-    end if methods.member? :new
+    end if methods.member? :delete
 
     # helper
     define_method :cruddler_get_nested do
