@@ -6,7 +6,7 @@ class ActionController::Base
     klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
     nested = opts[:nested].present? ? opts[:nested].to_s : nil
-    nested_class = nested ? nested.classify.constantize : nil
+    nested_class = nested ? nested.pluralize.classify.constantize : nil
     methods = [:index, :show, :edit, :update, :new, :create, :destroy] if methods == :all
     methods = [methods] unless methods.is_a?(Array)
     pnam = klass.to_s.tableize.singularize
