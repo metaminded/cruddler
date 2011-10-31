@@ -42,7 +42,7 @@ class ActionController::Base
       instance_variable_set(nam, t)
       if success
         flash[:notice] = t(locale_key("update_success"))
-        redirect_to current_index_path()
+        redirect_to after_update_path()
       else
         flash[:alert] = t(locale_key("update_problem"))
         render :edit
@@ -69,7 +69,7 @@ class ActionController::Base
       instance_variable_set(nam, t)
       if success
         flash[:notice] = t(locale_key("create_success"))
-        redirect_to current_index_path()
+        redirect_to after_create_path()
       else
         flash[:alert] = t(locale_key("create_problem"))
         render :new
@@ -82,7 +82,7 @@ class ActionController::Base
       s = instance_variable_set(nam, klass.find(params[:id]))
       s.destroy
       flash[:notice] = t(locale_key("delete_success"))
-      redirect_to current_index_path()
+      redirect_to after_destroy_path()
     end if methods.member? :destroy
 
     # helper
@@ -118,6 +118,18 @@ class ActionController::Base
 
     define_method :current_new_path do
       new_polymorphic_path(current_path_components(resource_name))
+    end
+
+    define_method :after_update_path
+      current_index_path()
+    end
+
+    define_method :after_create_path
+      current_index_path()
+    end
+
+    define_method :after_destroy_path
+      current_index_path()
     end
 
     define_method :locale_key do |str|
