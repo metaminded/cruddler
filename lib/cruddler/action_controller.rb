@@ -120,15 +120,15 @@ class ActionController::Base
       new_polymorphic_path(current_path_components(resource_name))
     end
 
-    define_method :after_update_path
+    define_method :after_update_path do
       current_index_path()
     end
 
-    define_method :after_create_path
+    define_method :after_create_path do
       current_index_path()
     end
 
-    define_method :after_destroy_path
+    define_method :after_destroy_path do
       current_index_path()
     end
 
