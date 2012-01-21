@@ -14,24 +14,32 @@ class ActionController::Base
 
     # index
     define_method :index do
-      if nested
+      models = if nested
         n = cruddler_get_nested
-        instance_variable_set(nam.pluralize, n.send(klass_name.pluralize).find_for_table(params))
+        n.send(klass_name.pluralize).find_for_table(params)
       else
-        instance_variable_set(nam.pluralize, klass.find_for_table(params))
+        klass.find_for_table(params)
       end
+      models.each do |m|
+        authorize! :read, m
+      end if opts[:authorize]
+      instance_variable_set(nam.pluralize, m)
     end if methods.member? :index
 
     # show
     define_method :show do
       cruddler_get_nested if nested
-      instance_variable_set(nam, klass.find(params[:id]))
+      m = klass.find(params[:id])
+      authorize!(:read, m) if opts[:authorize]
+      instance_variable_set(nam, m)
     end if methods.member? :show
 
     # edit
     define_method :edit do
       cruddler_get_nested if nested
-      instance_variable_set(nam, klass.find(params[:id]))
+      m = klass.find(params[:id])
+      authorize!(:update, m) if opts[:authorize]
+      instance_variable_set(nam, m)
     end if methods.member? :edit
 
     # update
@@ -39,6 +47,7 @@ class ActionController::Base
       cruddler_get_nested if nested
       t = klass.find(params[:id])
       success = t.update_attributes(params[pnam])
+      authorize!(:update, t) if opts[:authorize]
       instance_variable_set(nam, t)
       if success
         flash[:notice] = t(locale_key("update_success"))
@@ -51,7 +60,9 @@ class ActionController::Base
 
     # new
     define_method :new do
-      s = instance_variable_set(nam, klass.new)
+      m = klass.new
+      authorize!(:create, m) if opts[:authorize]
+      s = instance_variable_set(nam, m)
       if nested
         n = cruddler_get_nested
         s.send("#{nested}=", n)
@@ -61,6 +72,7 @@ class ActionController::Base
     # create
     define_method :create do
       t = klass.new(params[pnam])
+      authorize!(:create, t) if opts[:authorize]
       if nested
         n = cruddler_get_nested
         t.send("#{nested}=", n)
@@ -79,7 +91,9 @@ class ActionController::Base
     # delete
     define_method :destroy do
       cruddler_get_nested if nested
-      s = instance_variable_set(nam, klass.find(params[:id]))
+      m = klass.find(params[:id])
+      authorize!(:destroy, m) if opts[:authorize]
+      s = instance_variable_set(nam, m)
       s.destroy
       flash[:notice] = t(locale_key("delete_success"))
       redirect_to after_destroy_path()
