@@ -23,7 +23,7 @@ class ActionController::Base
       models.each do |m|
         authorize! :read, m
       end if opts[:authorize]
-      instance_variable_set(nam.pluralize, m)
+      instance_variable_set(nam.pluralize, models)
     end if methods.member? :index
 
     # show
