@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = "info@provideal.net"
   s.homepage    = "http://github.com/provideal/cruddler"
   s.description = "quite lazy coders"
-  s.authors     = ['Peter Horn', 'René Sprotte']
+  s.authors     = ['Peter Horn', 'Rene Sprotte']
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
