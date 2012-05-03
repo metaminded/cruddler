@@ -3,14 +3,35 @@
 class ActionController::Base
 
   def self.cruddler(methods, opts={})
+    # get the class that's to be used if it can't be guessed from the controller name
     klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
-    nested = opts[:nested].present? ? opts[:nested].to_s : nil
-    nested_class = nested ? nested.pluralize.classify.constantize : nil
-    methods = [:index, :show, :edit, :update, :new, :create, :destroy] if methods == :all
-    methods = [methods] unless methods.is_a?(Array)
     pnam = klass.to_s.tableize.singularize
     nam = "@" + pnam
+    
+    # if the resource is nested, get the wrapping resources
+    # :nested => :masterclass
+    # :nested => [:supermasterclassname, :masterclassname]
+    # :nested => {:supermasterclassname => SuperMasterClassName, :masterclassname => MasterClassName}
+    nested = opts[:nested].presence
+    nested = [nested] if nested.is_a? String || nested.is_a? Symbol
+    nested = case nested
+    when nil then nil
+    when Array then Hash[nested.map{|n| [n.to_s, n.pluralize.classify.constantize]}]
+    when Hash then nested
+    else raise "expected :nested Option to get either a list of model-names or a hash name => Class" 
+    end
+    before_filter :cruddler_get_nested if nested
+
+    # which CRUD methods are to be created?
+    methods = case methods
+    when :all then [:index, :show, :edit, :update, :new, :create, :destroy]
+    when :read then [:index, :show]
+    when :none then []
+    else [*methods]
+    end
+
+    current_path_components = opts[:path_components] || self.class.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
 
     # index
     define_method :index do
@@ -158,8 +179,7 @@ class ActionController::Base
     end
 
     define_method :current_path_components do |*args|
-      @current_path_components ||= self.class.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
-      (@current_path_components + args).compact
+      (current_path_components + args).compact
     end
 
     helper_method :resource_name, :resources_name,
