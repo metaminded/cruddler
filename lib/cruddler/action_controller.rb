@@ -8,18 +8,18 @@ class ActionController::Base
     klass_name = klass.to_s.tableize
     pnam = klass.to_s.tableize.singularize
     nam = "@" + pnam
-    
+
     # if the resource is nested, get the wrapping resources
     # :nested => :masterclass
     # :nested => [:supermasterclassname, :masterclassname]
     # :nested => {:supermasterclassname => SuperMasterClassName, :masterclassname => MasterClassName}
     nested = opts[:nested].presence
-    nested = [nested] if nested.is_a? String || nested.is_a? Symbol
+    nested = [nested] if nested.is_a?(String) || nested.is_a?(Symbol)
     nested = case nested
     when nil then nil
     when Array then Hash[nested.map{|n| [n.to_s, n.pluralize.classify.constantize]}]
     when Hash then nested
-    else raise "expected :nested Option to get either a list of model-names or a hash name => Class" 
+    else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
     end
     before_filter :cruddler_get_nested if nested
 
@@ -31,7 +31,7 @@ class ActionController::Base
     else [*methods]
     end
 
-    current_path_components = opts[:path_components] || self.class.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
+    current_path_components = opts[:path_components] || self.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
 
     # index
     define_method :index do
