@@ -17,7 +17,7 @@ class ActionController::Base
     nested = [nested] if nested.is_a?(String) || nested.is_a?(Symbol)
     nested = case nested
     when nil then nil
-    when Array then Hash[nested.map{|n| [n.to_s, n.pluralize.classify.constantize]}]
+    when Array then Hash[nested.map{|n| [n.to_s, n.to_s.classify.constantize]}]
     when Hash then nested
     else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
     end
@@ -31,7 +31,7 @@ class ActionController::Base
     else [*methods]
     end
 
-    current_path_components = opts[:path_components] || self.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
+    static_path_components = opts[:path_components] || self.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
 
     # index
     define_method :index do
@@ -122,9 +122,10 @@ class ActionController::Base
 
     # helper
     define_method :cruddler_get_nested do
-      return nil unless nested
-      instance_variable_get("@#{nested}") ||
-      instance_variable_set("@#{nested}", nested_class.find(params["#{nested}_id"]))
+      nested.map do |nam, nklaz|
+        instance_variable_get("@#{nam}") ||
+        instance_variable_set("@#{nam}", nklaz.find(params["#{nam}_id"]))
+      end
     end
 
     define_method :resource_name do
@@ -179,7 +180,7 @@ class ActionController::Base
     end
 
     define_method :current_path_components do |*args|
-      (current_path_components + args).compact
+      [static_path_components, cruddler_get_nested, args].flatten.compact
     end
 
     helper_method :resource_name, :resources_name,
