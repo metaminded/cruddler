@@ -16,7 +16,7 @@ class ActionController::Base
     nested = opts[:nested].presence
     nested = [nested] if nested.is_a?(String) || nested.is_a?(Symbol)
     nested = case nested
-    when nil then nil
+    when nil then []
     when Array then Hash[nested.map{|n| [n.to_s, n.to_s.classify.constantize]}]
     when Hash then nested
     else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
@@ -33,13 +33,18 @@ class ActionController::Base
 
     static_path_components = opts[:path_components] || self.to_s.split("::").map(&:tableize).map(&:singularize)[0..-2]
 
-    # index
-    define_method :index do
-      models = if nested
-        n = cruddler_get_nested
-        n.send(klass_name.pluralize).find_for_table(params)
+    define_method :cruddler_find_on do
+      find_on = if nested.present?
+        n = cruddler_get_nested.last
+        n.send(klass_name.pluralize)
       else
         klass.find_for_table(params)
+      end
+    end
+
+    # index
+    define_method :index do
+      models = cruddler_find_on.find_for_table(params)
       end
       models.each do |m|
         authorize! :read, m
@@ -49,16 +54,14 @@ class ActionController::Base
 
     # show
     define_method :show do
-      cruddler_get_nested if nested
-      m = klass.find(params[:id])
+      m = cruddler_find_on.find(params[:id])
       authorize!(:read, m) if opts[:authorize]
       instance_variable_set(nam, m)
     end if methods.member? :show
 
     # edit
     define_method :edit do
-      cruddler_get_nested if nested
-      m = klass.find(params[:id])
+      m = cruddler_find_on.find(params[:id])
       authorize!(:update, m) if opts[:authorize]
       instance_variable_set(nam, m)
     end if methods.member? :edit
@@ -66,7 +69,7 @@ class ActionController::Base
     # update
     define_method :update do
       cruddler_get_nested if nested
-      t = klass.find(params[:id])
+      t = cruddler_find_on.find(params[:id])
       success = t.update_attributes(params[pnam])
       authorize!(:update, t) if opts[:authorize]
       instance_variable_set(nam, t)
@@ -94,9 +97,8 @@ class ActionController::Base
     define_method :create do
       t = klass.new(params[pnam])
       authorize!(:create, t) if opts[:authorize]
-      if nested
-        n = cruddler_get_nested
-        t.send("#{nested}=", n)
+      nested.last.try do |name, nklaz|
+        t.send("#{name}=", instance_variable_get("@#{name}"))
       end
       success = t.save
       instance_variable_set(nam, t)
