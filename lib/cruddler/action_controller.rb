@@ -38,14 +38,13 @@ class ActionController::Base
         n = cruddler_get_nested.last
         n.send(klass_name.pluralize)
       else
-        klass.find_for_table(params)
+        klass
       end
     end
 
     # index
     define_method :index do
       models = cruddler_find_on.find_for_table(params)
-      end
       models.each do |m|
         authorize! :read, m
       end if opts[:authorize]
@@ -68,7 +67,6 @@ class ActionController::Base
 
     # update
     define_method :update do
-      cruddler_get_nested if nested
       t = cruddler_find_on.find(params[:id])
       success = t.update_attributes(params[pnam])
       authorize!(:update, t) if opts[:authorize]
@@ -87,9 +85,8 @@ class ActionController::Base
       m = klass.new
       authorize!(:create, m) if opts[:authorize]
       s = instance_variable_set(nam, m)
-      if nested
-        n = cruddler_get_nested
-        s.send("#{nested}=", n)
+      nested.to_a.last.try do |name, nklaz|
+        m.send("#{name}=", instance_variable_get("@#{name}"))
       end
     end if methods.member? :new
 
@@ -97,7 +94,7 @@ class ActionController::Base
     define_method :create do
       t = klass.new(params[pnam])
       authorize!(:create, t) if opts[:authorize]
-      nested.last.try do |name, nklaz|
+      nested.to_a.last.try do |name, nklaz|
         t.send("#{name}=", instance_variable_get("@#{name}"))
       end
       success = t.save
@@ -113,7 +110,6 @@ class ActionController::Base
 
     # delete
     define_method :destroy do
-      cruddler_get_nested if nested
       m = klass.find(params[:id])
       authorize!(:destroy, m) if opts[:authorize]
       s = instance_variable_set(nam, m)
