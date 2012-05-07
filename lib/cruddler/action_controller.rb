@@ -135,7 +135,7 @@ class ActionController::Base
     end
 
     define_method :current_index_path do
-      if nested
+      if nested.present?
         edit_polymorphic_path(current_path_components(cruddler_get_nested))
       else
         polymorphic_path(current_path_components(resources_name))
