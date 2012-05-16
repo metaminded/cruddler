@@ -167,7 +167,9 @@ class ActionController::Base
     end
 
     define_method :locale_key do |str|
-      (['cruddler'] + current_path_components(resource_name,str)).join(".")
+      (['cruddler'] + current_path_components(resource_name,str)).map{|c|
+        c.is_a?(String) ? c : c.class.to_s.tableize
+      }.join(".")
     end
 
     define_method :name_for do |record|
