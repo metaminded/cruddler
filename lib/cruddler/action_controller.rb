@@ -6,7 +6,7 @@ class ActionController::Base
     # get the class that's to be used if it can't be guessed from the controller name
     klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
-    pnam = klass.to_s.tableize.singularize
+    pnam = klass.to_s.tableize.singularize.gsub('/', '_')
     nam = "@" + pnam
 
     # if the resource is nested, get the wrapping resources
