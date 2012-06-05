@@ -6,7 +6,7 @@ class ActionController::Base
     # get the class that's to be used if it can't be guessed from the controller name
     klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
-    pnam = klass.to_s.tableize.singularize.gsub('/', '_')
+    pnam = opts[:parameter_name] || klass.to_s.tableize.singularize.gsub('/', '_')
     nam = "@" + pnam
 
     # if the resource is nested, get the wrapping resources
@@ -135,7 +135,7 @@ class ActionController::Base
     end
 
     define_method :current_index_path do
-      if nested.present?
+      opts[:index_path] || if nested.present?
         edit_polymorphic_path(current_path_components(cruddler_get_nested))
       else
         polymorphic_path(current_path_components(resources_name))
@@ -155,15 +155,15 @@ class ActionController::Base
     end
 
     define_method :after_update_path do
-      current_index_path()
+      opts[:after_update_path] || current_index_path()
     end
 
     define_method :after_create_path do
-      current_index_path()
+      opts[:after_create_path] || current_index_path()
     end
 
     define_method :after_destroy_path do
-      current_index_path()
+      opts[:after_destroy_path] || current_index_path()
     end
 
     define_method :locale_key do |str|
