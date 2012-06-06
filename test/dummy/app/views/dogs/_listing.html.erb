@@ -1,0 +1,23 @@
+<% if @dogs.present? %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Ref</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+  <% @dogs.each do |dog| %>
+    <tr>
+      <td><%= dog.name %></td>
+      <td><%= dog.ref.name %></td>
+      <td><%= link_to 'Show', [@house, dog] %></td>
+      <td><%= link_to 'Edit', edit_house_dog_path(@house, dog) %></td>
+      <td><%= link_to 'Destroy', [@house, dog], confirm: 'Are you sure?', method: :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <p>No Dogs</p>
+<% end %>

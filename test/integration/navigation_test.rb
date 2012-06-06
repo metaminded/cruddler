@@ -1,10 +1,10 @@
 require 'test_helper'
 
 class NavigationTest < ActionDispatch::IntegrationTest
-  fixtures :all
 
-  # test "the truth" do
-  #   assert true
-  # end
+  test "visit index page" do
+    visit '/houses'
+  end
+
 end
 

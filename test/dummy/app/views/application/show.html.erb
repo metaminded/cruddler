@@ -1,0 +1,17 @@
+<h1 class="page_title"><%= t("cruddler.show_#{resource_name}") %></h1>
+
+<% begin %>
+  <%= render(:partial => "show_#{resource_name}") %>
+<% rescue ActionView::MissingTemplate => e %>
+  <% begin %>
+    <%= render(:partial => "form") %>
+  <% rescue ActionView::MissingTemplate => e %>
+    <% begin %>
+      <%= render(:partial => "#{resource_name}") %>
+    <% rescue ActionView::MissingTemplate => e %>
+      <%= "** No template found, create either 'show_#{resource_name}', '#{resource_name}', or 'form' partial. **" %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= link_to t("cruddler.abort"), current_index_path, :class => 'button' %>

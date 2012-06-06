@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
 
-  mount Cruddler::Engine => "/cruddler"
+  resources :houses do
+    resources :dogs
+    resources :cats
+  end
+
 end

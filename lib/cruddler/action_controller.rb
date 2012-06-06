@@ -45,7 +45,11 @@ class ActionController::Base
 
     # index
     define_method :index do
-      models = cruddler_find_on.find_for_table(params)
+      models = if cruddler_find_on.respond_to? :find_for_table
+        cruddler_find_on.find_for_table(params)
+      else
+        cruddler_find_on.all
+      end
       models.each do |m|
         authorize! :read, m
       end if opts[:authorize]
@@ -137,7 +141,7 @@ class ActionController::Base
 
     define_method :current_index_path do
       cruddler_path_from(opts[:index_path]) || if nested.present?
-        edit_polymorphic_path(current_path_components(cruddler_get_nested))
+        edit_polymorphic_path(current_path_components())
       else
         polymorphic_path(current_path_components(resources_name))
       end
@@ -148,7 +152,7 @@ class ActionController::Base
     end
 
     define_method :current_edit_path do |obj|
-      edit_polymorphic_path(current_path_components(cruddler_get_nested,obj))
+      edit_polymorphic_path(current_path_components(obj))
     end
 
     define_method :current_new_path do
@@ -181,9 +185,10 @@ class ActionController::Base
       end
     end
 
-    define cruddler_path_from(s)
-      obj = instance_variable_get("@#{nam}")
+    define_method :cruddler_path_from do |s|
+      obj = instance_variable_get(nam)
       case s
+      when nil, false then nil
       when String then s
       when :index then current_index_path()
       when :show then current_show_path(obj)
@@ -191,12 +196,13 @@ class ActionController::Base
       when :new then current_new_path()
       when Proc
         if s.arity == 0
-          instance_eval &s
+          instance_exec(&s)
         elsif s.arity == 1
           instance_exec(obj) &s
         else
           raise "Don't know how to deliver more than one parameter."
         end
+      when "moo" then raise "haha, sehr witzig"
       else raise "Don't know how to deal with `#{s}`."
       end
     end

@@ -1,0 +1,23 @@
+<% if @cats.present? %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>House</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+  <% @cats.each do |cat| %>
+    <tr>
+      <td><%= cat.name %></td>
+      <td><%= cat.house.name %></td>
+      <td><%= link_to 'Show', [@house, cat] %></td>
+      <td><%= link_to 'Edit', edit_house_cat_path(@house, cat) %></td>
+      <td><%= link_to 'Destroy', [@house, cat], confirm: 'Are you sure?', method: :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <p>No Cats</p>
+<% end -%>

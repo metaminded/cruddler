@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @house.name %>
+</p>
+
+<p>
+  <b>Number:</b>
+  <%= @house.number %>
+</p>
+
+
+<%= link_to 'Cats', house_cats_path(@house) %> |
+<%= link_to 'Dogs', house_dogs_path(@house) %> |
+<%= link_to 'Edit', edit_house_path(@house) %> |
+<%= link_to 'Back', houses_path %>
