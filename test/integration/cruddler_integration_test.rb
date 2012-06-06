@@ -82,6 +82,29 @@ class CruddlerIntegrationTest < ActionDispatch::IntegrationTest
     click_link "Destroy"
     assert_equal "/houses/#{house.id}/cats", current_path
     assert page.has_content?('No Cats')
+
+    %w{Moritz Klara Finka Willi}.each do |nam|
+      visit "/houses/#{house.id}/cats"
+
+      # CREATE
+      click_link 'Create'
+      assert_equal "/houses/#{house.id}/cats/new", current_path
+      fill_in 'cat_name', with: nam
+      click_button 'Create Cat'
+
+      # INDEX, again
+      assert_equal "/houses/#{house.id}/cats", current_path
+      assert page.has_content?('Cat House')
+      assert page.has_content?(nam)
+    end
+
+    house.cats.each do |cat|
+      visit "/houses/#{house.id}/cats/#{cat.id}/edit"
+      fill_in 'cat_name', with: "Moo#{cat.name}"
+      click_button 'Update Cat'
+      assert_equal "/houses/#{house.id}/cats", current_path
+      assert page.has_content?("Moo#{cat.name}")
+    end
   end
 
   test "Nested polymorphic has_many CRUD" do
