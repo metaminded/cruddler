@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 
+
   resources :houses do
     resources :dogs
-    resources :cats
+    resources :cats do
+      resources :parasites
+    end
   end
 
 end

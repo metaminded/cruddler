@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606110348) do
+ActiveRecord::Schema.define(:version => 20120606175547) do
 
   create_table "cats", :force => true do |t|
     t.string   "name"
@@ -39,5 +39,15 @@ ActiveRecord::Schema.define(:version => 20120606110348) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "parasites", :force => true do |t|
+    t.string   "name"
+    t.integer  "legs"
+    t.integer  "cat_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "parasites", ["cat_id"], :name => "index_parasites_on_cat_id"
 
 end

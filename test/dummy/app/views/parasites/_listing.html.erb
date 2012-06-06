@@ -1,0 +1,27 @@
+<% if @parasites.present? %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Legs</th>
+      <th>Cat</th>
+      <th>House</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+  <% @parasites.each do |parasite| %>
+    <tr>
+      <td><%= parasite.name %></td>
+      <td><%= parasite.legs %></td>
+      <td><%= parasite.cat.name %></td>
+      <td><%= parasite.cat.house.name %></td>
+      <td><%= link_to 'Show', [@house, @cat, parasite] %></td>
+      <td><%= link_to 'Edit', edit_house_cat_parasite_path(@house, @cat, parasite) %></td>
+      <td><%= link_to 'Destroy', [@house, @cat, parasite], confirm: 'Are you sure?', method: :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <p>No Parasites</p>
+<% end -%>

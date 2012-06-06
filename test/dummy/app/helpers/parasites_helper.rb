@@ -1,0 +1,2 @@
+module ParasitesHelper
+end
