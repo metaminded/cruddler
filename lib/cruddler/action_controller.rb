@@ -22,6 +22,7 @@ class ActionController::Base
     else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
     end
     before_filter :cruddler_get_nested if nested
+    nested_as = opts[:nested_as] || nested.to_a.last.try(:first)
 
     # which CRUD methods are to be created?
     methods = case methods
@@ -86,7 +87,7 @@ class ActionController::Base
       authorize!(:create, m) if opts[:authorize]
       s = instance_variable_set(nam, m)
       nested.to_a.last.try do |name, nklaz|
-        m.send("#{name}=", instance_variable_get("@#{name}"))
+        m.send("#{nested_as}=", instance_variable_get("@#{name}"))
       end
     end if methods.member? :new
 
@@ -95,7 +96,7 @@ class ActionController::Base
       t = klass.new(params[pnam])
       authorize!(:create, t) if opts[:authorize]
       nested.to_a.last.try do |name, nklaz|
-        t.send("#{name}=", instance_variable_get("@#{name}"))
+        t.send("#{nested_as}=", instance_variable_get("@#{name}"))
       end
       success = t.save
       instance_variable_set(nam, t)
