@@ -136,7 +136,7 @@ class ActionController::Base
     end
 
     define_method :current_index_path do
-      opts[:index_path] || if nested.present?
+      cruddler_path_from(opts[:index_path]) || if nested.present?
         edit_polymorphic_path(current_path_components(cruddler_get_nested))
       else
         polymorphic_path(current_path_components(resources_name))
@@ -156,15 +156,15 @@ class ActionController::Base
     end
 
     define_method :after_update_path do
-      opts[:after_update_path] || current_index_path()
+      cruddler_path_from(opts[:after_update_path]) || current_index_path()
     end
 
     define_method :after_create_path do
-      opts[:after_create_path] || current_index_path()
+      cruddler_path_from(opts[:after_create_path]) || current_index_path()
     end
 
     define_method :after_destroy_path do
-      opts[:after_destroy_path] || current_index_path()
+      cruddler_path_from(opts[:after_destroy_path]) || current_index_path()
     end
 
     define_method :locale_key do |str|
@@ -174,9 +174,30 @@ class ActionController::Base
     end
 
     define_method :name_for do |record|
-      if record.respond_to?(:name) then record.name
+      if opts[:name] then record.send opts[:name]
+      elsif record.respond_to?(:name) then record.name
       elsif record.respond_to?(:title) then record.title
       else "**unknown**"
+      end
+    end
+
+    define cruddler_path_from(s)
+      obj = instance_variable_get("@#{nam}")
+      case s
+      when String then s
+      when :index then current_index_path()
+      when :show then current_show_path(obj)
+      when :edit then current_show_path(obj)
+      when :new then current_new_path()
+      when Proc
+        if s.arity == 0
+          instance_eval &s
+        elsif s.arity == 1
+          instance_exec(obj) &s
+        else
+          raise "Don't know how to deliver more than one parameter."
+        end
+      else raise "Don't know how to deal with `#{s}`."
       end
     end
 
@@ -188,5 +209,4 @@ class ActionController::Base
       :current_index_path, :current_show_path, :current_new_path,
       :locale_key, :name_for, :current_path_components
   end
-
 end
