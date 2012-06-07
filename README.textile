@@ -18,23 +18,48 @@ just write
   cruddler :all
 </pre>
 
-into your controller, or replace <tt>:all</tt> with a list of the actions you want to generate. 
+into your controller, or replace <tt>:all</tt> with a list of the actions you want to generate.
 
-If the class can't be guessed from the controller name, pass a <tt>:class => MyClass</tt> option.
+h3. Options
 
-If the current resource is nested, pass <tt>:nested => :master_model</tt>, deep nesting is about to come.
+* <tt>:class =&gt; </tt> the resource class, if it can't be guessed from the controller name
+* <tt>:parameter_name =&gt; </tt> the name of the <tt>params</tt> entry, also used as the name of the instance variable generated
+* <tt>:nested =&gt; </tt> if the current resource is nested, either give the name of the nesting model, an array of the names of nesting models, or a hash <tt>{:model1 => Model1, :model2 => Model2, ...}</tt> if the name/model connection can't be guessed.
+* <tt>:nested_as =&gt; </tt> the name of the current resource inside the nesting model, if it can't be guessed. Usually necessary for polymorphic nestings
+* <tt>:path_components =&gt; </tt> an array of path components like <tt>[:admin, :catalog]</tt> if they can't be guessed from the controller name
+* <tt>:authorize =&gt; </tt> <tt>true</tt> if <a href="https://github.com/ryanb/cancan">cancan</a> <tt>authorize!</tt> is to be called for the current resource
+* <tt>:index_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare the <tt>index</tt> path for redirects
+* <tt>:after_update_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after updates
+* <tt>:after_create_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after create
+* <tt>:after_destroy_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after destroy
 
 We intentionally don't offer any callbacks or the like, for typical CRUD actions are sufficiently simple to just implement them if they are non-standard. So -- It you're not happy with what cruddler generated, just implement your action 'by hand'.
 
 h2. Views
 
-Just implement <tt>_model_name</tt> and <tt>_listing</tt> partials, the rest is done magically. If your edit or new actions need to be more specific, you can override with <tt>_edit_model_name</tt> or <tt>_new_model_name</tt>.
+Just implement <tt>_model_name</tt>, and <tt>_listing</tt> partials, the rest is done magically. If your edit or new actions need to be more specific, you can override with <tt>_edit_model_name</tt> or <tt>_new_model_name</tt>.
 
 As with the controllers, we don't offer fancy customization options. If you don't like the views, go to the cruddler gem, copy the views into your project, and customize them to your needs.
 
-h2. Some words of wisdom
+h2. I18n
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. :)
+In the views and flash-messages, we use i18n, here's an example, you get the idea:
+
+<pre>
+  en:
+    cruddler:
+      abort: "Abort"
+      admin: # path elements if necessary
+        product:
+          edit: "Edit product '%{name}'"
+          index: "All our Products"
+          create: "Create new Product"
+          new: "Create new Product"
+          update_success: "Product updated"
+          update_problem: "Product can't be saved"
+          create_success: "Product created"
+          create_problem: "Product can't be created"
+</pre>
 
 h3. Bugs
 
