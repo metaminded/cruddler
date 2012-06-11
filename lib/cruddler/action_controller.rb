@@ -46,7 +46,7 @@ class ActionController::Base
     # index
     define_method :index do
       models = if cruddler_find_on.respond_to? :find_for_table
-        cruddler_find_on.find_for_table(params)
+        cruddler_find_on.find_for_table(params, (opts[:stateful_index] ? {stateful: session} : {}))
       else
         cruddler_find_on.all
       end
