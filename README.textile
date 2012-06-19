@@ -32,8 +32,11 @@ h3. Options
 * <tt>:after_update_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after updates
 * <tt>:after_create_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after create
 * <tt>:after_destroy_path =&gt; </tt> either a string, a symbol (<tt>:index, :show, :edit, :new</tt>) or a <tt>proc</tt> to declare where to redirect after destroy
+* <tt>:stateful_index =&gt; </tt> if tabulatr is available, the <tt>find_for_table</tt> call geht the <tt>:stateful =&gt; session</tt> option.
 
 We intentionally don't offer any callbacks or the like, for typical CRUD actions are sufficiently simple to just implement them if they are non-standard. So -- It you're not happy with what cruddler generated, just implement your action 'by hand'.
+
+BTW: If <a href="http://github.com/provideal/tabulatr">tabulatr</a> is available, the generated <tt>index</tt> action uses <tt>find_for_table</tt> instead of <tt>find</tt>.
 
 h2. Views
 

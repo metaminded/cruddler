@@ -213,6 +213,7 @@ class ActionController::Base
 
     helper_method :resource_name, :resources_name,
       :current_index_path, :current_show_path, :current_new_path,
+      :current_edit_path,
       :locale_key, :name_for, :current_path_components
   end
 end
