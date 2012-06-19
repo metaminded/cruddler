@@ -147,11 +147,17 @@ class ActionController::Base
       end
     end
 
-    define_method :current_show_path do |obj|
+    define_method :current_object do
+      instance_variable_get(nam)
+    end
+
+    define_method :current_show_path do |obj=nil|
+      obj ||= current_object
       polymorphic_path(current_path_components(obj))
     end
 
-    define_method :current_edit_path do |obj|
+    define_method :current_edit_path do |obj=nil|
+      obj ||= current_object
       edit_polymorphic_path(current_path_components(obj))
     end
 
