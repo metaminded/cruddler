@@ -191,6 +191,11 @@ class ActionController::Base
       end
     end
 
+    define_method :current_name do
+      return nil unless current_object
+      name_for(current_object)
+    end
+
     define_method :cruddler_path_from do |s|
       obj = instance_variable_get(nam)
       case s
