@@ -49,8 +49,8 @@ module Cruddler::PathHelpers
   end
 
   def current_name
-    return nil unless cruddler_current_object
-    name_for(cruddler_current_object)
+    return nil unless current_object
+    name_for(current_object)
   end
 
   def cruddler_path_from(s)

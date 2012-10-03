@@ -75,7 +75,6 @@ module Cruddler::Controller
       [static_path_components, cruddler_get_nested, args].flatten.compact
     end
 
-
     self.send :include, Cruddler::PathHelpers
 
     helper_method :resource_name, :resources_name,
