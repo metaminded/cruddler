@@ -32,7 +32,7 @@ module Cruddler::Controller
     else [*methods]
     end
 
-    static_path_components = opts[:path_components] || self.to_s.split("::").map(&:tableize)[0..-2]
+    static_path_components = opts[:path_components] || self.to_s.split("::").map(&:underscore)[0..-2]
 
     define_method :cruddler do
       @_cruddler ||= OpenStruct.new(
