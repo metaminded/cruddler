@@ -1,0 +1,21 @@
+#encoding: utf-8
+
+de:
+  cruddler:
+    admin:
+      catalog:
+        article:
+          index: "Alle Artikel"
+          edit: "Artikel '%{name}' bearbeiten"
+          create: "Neuen Artikel anlegen"
+          new: "Neuen Artikel anlegen"
+          update_success: "Artikel aktualisiert"
+          update_problem: "Artikel kann nicht aktualisiert werden"
+          create_success: "Artikel angelegt"
+          create_problem: "Artikel kann nicht angelegt werden"
+          new_help_html: |
+               <p>lorem ipsum...</p>
+          show_help_html: ''
+          edit_help_html: ''
+          index_help_html: |
+               <p>lorem ipsum...</p>

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cruddler (0.2.0)
+    cruddler (0.5.0)
       rails (> 3.1.0)
 
 GEM
