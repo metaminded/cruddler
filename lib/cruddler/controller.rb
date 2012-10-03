@@ -70,6 +70,7 @@ module Cruddler::Controller
     define_method :current_object do
       instance_variable_get(nam)
     end
+    alias_method :cruddler_current_object, :current_object
 
     define_method :current_path_components do |*args|
       [static_path_components, cruddler_get_nested, args].flatten.compact
