@@ -10,7 +10,7 @@ module Cruddler
 
       def copy_views
         puts "views for view inheritance"
-        copy_file 'application/*', "app/views/admin/application/"
+        directory 'application', "app/views/admin/application"
       end
     end
   end

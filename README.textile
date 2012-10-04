@@ -10,6 +10,23 @@ The same annoyance I found in implementing the corresponding view.
 
 And now, Rails 3.1 is there with view inheritance.
 
+h2. Installaton
+
+add to your Gemfile:
+<pre>
+  gem 'cruddler', git: 'https://github.com/provideal/cruddler'
+</pre>
+
+and install the view-inheritance views:
+
+<pre>
+  rails g cruddler:install
+</pre>
+
+This installs the index, show, new, edit files to <tt>app/views/admin/application/</tt>, if you want to use them elsewhere, just move them around as you like :)
+
+It also installs a <tt>cruddler.yml</tt> locale file as described below in i18n.
+
 h2. Controller
 
 just write
