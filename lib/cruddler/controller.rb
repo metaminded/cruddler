@@ -45,7 +45,10 @@ module Cruddler::Controller
           parameter_name: pnam,
           resource_name: self.class.to_s.split("::").last[0..(-11)].tableize.singularize,
           resources_name: self.class.to_s.split("::").last[0..(-11)].tableize,
-          find_on: (nested.present? ? cruddler_get_nested.last.send(klass_name.pluralize) : klass)
+          find_on: if !nested.present? then klass
+            else
+              (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass) : klass
+            end
         )
     end
     private :cruddler
