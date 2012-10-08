@@ -47,7 +47,7 @@ module Cruddler::Controller
           resources_name: self.class.to_s.split("::").last[0..(-11)].tableize,
           find_on: if !nested.present? then klass
             else
-              (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass) : klass
+              (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
             end
         )
     end
