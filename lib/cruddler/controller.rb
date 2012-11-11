@@ -32,6 +32,9 @@ module Cruddler::Controller
     else [*methods]
     end
 
+    resources_name = opts[:resources_name] || self.class.to_s.split("::").last[0..(-11)].tableize
+    resource_name = opts[:resource_name] || resource_name.singularize
+
     static_path_components = opts[:path_components] || self.to_s.split("::").map(&:underscore)[0..-2]
 
     define_method :cruddler do
@@ -43,8 +46,8 @@ module Cruddler::Controller
           nested: nested,
           nested_as: nested_as,
           parameter_name: pnam,
-          resource_name: self.class.to_s.split("::").last[0..(-11)].tableize.singularize,
-          resources_name: self.class.to_s.split("::").last[0..(-11)].tableize,
+          resource_name: resource_name,
+          resources_name: resources_name,
           find_on: if !nested.present? then klass
             else
               (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
