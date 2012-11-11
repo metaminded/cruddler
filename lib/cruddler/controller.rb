@@ -33,7 +33,7 @@ module Cruddler::Controller
     end
 
     resources_name = opts[:resources_name] || self.class.to_s.split("::").last[0..(-11)].tableize
-    resource_name = opts[:resource_name] || resource_name.singularize
+    resource_name = opts[:resource_name] || resources_name.singularize
 
     static_path_components = opts[:path_components] || self.to_s.split("::").map(&:underscore)[0..-2]
 
