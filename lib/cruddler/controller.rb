@@ -32,10 +32,8 @@ module Cruddler::Controller
     else [*methods]
     end
 
-    rsn = opts[:resources_name].presence || self.class.to_s.split("::").last[0..(-11)].tableize
+    rsn = opts[:resources_name].presence || self.to_s.split("::").last[0..(-11)].tableize
     rn  = opts[:resource_name].presence  || rsn.singularize
-
-    puts ">>> '#{resources_name}' -> '#{resource_name}'"
 
     static_path_components = opts[:path_components] || self.to_s.split("::").map(&:underscore)[0..-2]
 
