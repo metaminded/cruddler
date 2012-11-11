@@ -32,8 +32,8 @@ module Cruddler::Controller
     else [*methods]
     end
 
-    resources_name = opts[:resources_name] || self.class.to_s.split("::").last[0..(-11)].tableize
-    resource_name  = opts[:resource_name]  || resources_name.singularize
+    rsn = opts[:resources_name].presence || self.class.to_s.split("::").last[0..(-11)].tableize
+    rn  = opts[:resource_name].presence  || rsn.singularize
 
     puts ">>> '#{resources_name}' -> '#{resource_name}'"
 
@@ -48,8 +48,8 @@ module Cruddler::Controller
           nested: nested,
           nested_as: nested_as,
           parameter_name: pnam,
-          resource_name: resource_name,
-          resources_name: resources_name,
+          resource_name: rn,
+          resources_name: rsn,
           find_on: if !nested.present? then klass
             else
               (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
