@@ -47,14 +47,18 @@ module Cruddler::Controller
           nested_as: nested_as,
           parameter_name: pnam,
           resource_name: rn,
-          resources_name: rsn,
-          find_on: if !nested.present? then klass
-            else
-              (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
-            end
+          resources_name: rsn
         )
     end
     private :cruddler
+
+    define_method :cruddler_find_on do
+      if !nested.present? then klass
+      else
+        (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
+      end
+    end
+    private :cruddler_find_on
 
     define_method :resource_name do cruddler.resource_name end
     define_method :resources_name do cruddler.resources_name end

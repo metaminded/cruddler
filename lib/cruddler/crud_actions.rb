@@ -4,10 +4,10 @@ module Cruddler::CrudActions
 
   # index
   def cruddler_index_action
-    models = if cruddler.find_on.respond_to? :find_for_table
-      cruddler.find_on.find_for_table(params, (cruddler.opts[:stateful_index] ? {stateful: session} : {}))
+    models = if cruddler_find_on.respond_to? :find_for_table
+      cruddler_find_on.find_for_table(params, (cruddler.opts[:stateful_index] ? {stateful: session} : {}))
     else
-      cruddler.find_on.all
+      cruddler_find_on.all
     end
     models.each do |m|
       authorize! :read, m
@@ -17,21 +17,21 @@ module Cruddler::CrudActions
 
   # show
   def cruddler_show_action
-    m = cruddler.find_on.find(params[:id])
+    m = cruddler_find_on.find(params[:id])
     authorize!(:read, m) if cruddler.opts[:authorize]
     instance_variable_set(cruddler.model_name, m)
   end
 
   # edit
   def cruddler_edit_action
-    m = cruddler.find_on.find(params[:id])
+    m = cruddler_find_on.find(params[:id])
     authorize!(:update, m) if cruddler.opts[:authorize]
     instance_variable_set(cruddler.model_name, m)
   end
 
   # update
   def cruddler_update_action
-    t = cruddler.find_on.find(params[:id])
+    t = cruddler_find_on.find(params[:id])
     success = t.update_attributes(params[cruddler.parameter_name])
     authorize!(:update, t) if cruddler.opts[:authorize]
     instance_variable_set(cruddler.model_name, t)
