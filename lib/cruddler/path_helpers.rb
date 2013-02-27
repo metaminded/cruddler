@@ -58,10 +58,10 @@ module Cruddler::PathHelpers
     case s
     when nil, false then nil
     when String then s
-    when :index then current_index_path()
-    when :show then current_show_path(obj)
-    when :edit then current_show_path(obj)
-    when :new then current_new_path()
+    when :index, 'index' then current_index_path()
+    when :show, 'show' then current_show_path(obj)
+    when :edit, 'edit' then current_show_path(obj)
+    when :new, 'new' then current_new_path()
     when Proc
       if s.arity == 0
         instance_exec(&s)
