@@ -66,7 +66,7 @@ module Cruddler::PathHelpers
       if s.arity == 0
         instance_exec(&s)
       elsif s.arity == 1
-        instance_exec(obj) &s
+        instance_exec(obj, &s)
       else
         raise "Don't know how to deliver more than one parameter."
       end
