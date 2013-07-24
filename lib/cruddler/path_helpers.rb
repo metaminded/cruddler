@@ -1,7 +1,7 @@
 module Cruddler::PathHelpers
 
   def current_index_path
-    cruddler_path_from(cruddler.opts[:index_path]) || if cruddler.nested.present?
+    cruddler_path_from(cruddler.index_path) || if cruddler.nested.present?
       edit_polymorphic_path(current_path_components())
     else
       polymorphic_path(current_path_components(cruddler.resources_name))
@@ -23,15 +23,15 @@ module Cruddler::PathHelpers
   end
 
   def after_update_path
-    cruddler_path_from(cruddler.opts[:after_update_path]) || current_index_path()
+    cruddler_path_from(cruddler.after_update_path) || current_index_path()
   end
 
   def after_create_path
-    cruddler_path_from(cruddler.opts[:after_create_path]) || current_index_path()
+    cruddler_path_from(cruddler.after_create_path) || current_index_path()
   end
 
   def after_destroy_path
-    cruddler_path_from(cruddler.opts[:after_destroy_path]) || current_index_path()
+    cruddler_path_from(cruddler.after_destroy_path) || current_index_path()
   end
 
   def locale_key(str)
@@ -41,7 +41,7 @@ module Cruddler::PathHelpers
   end
 
   def name_for(record)
-    if cruddler.opts[:name] then record.send cruddler.opts[:name]
+    if cruddler.name then record.send cruddler.name
     elsif record.respond_to?(:name) then record.name
     elsif record.respond_to?(:title) then record.title
     else "**unknown**"

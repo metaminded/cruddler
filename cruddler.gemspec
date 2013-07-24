@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
   s.rdoc_options  = ['--charset=UTF-8']
 
 
-  s.add_runtime_dependency('rails', '> 3.1.0')
+  s.add_runtime_dependency('rails', '> 4.0.0')
 end

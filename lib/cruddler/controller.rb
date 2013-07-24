@@ -2,18 +2,34 @@
 
 module Cruddler::Controller
 
-  def cruddler(methods, opts={})
+  def cruddler(methods,
+      klass:              nil,
+      parameter_name:     nil,
+      nested:             nil,
+      nested_as:          nil,
+      resources_name:     nil,
+      resource_name:      nil,
+      path_components:    nil,
+      stateful_index:     nil,
+      authorize:          nil,
+      index_path:         nil,
+      after_destroy_path: nil,
+      after_create_path:  nil,
+      after_update_path:  nil,
+      name:               nil,
+      use_tabulatr:       nil,
+      &params_block)
     # get the class that's to be used if it can't be guessed from the controller name
-    klass = opts[:class] || self.to_s.split("::").last.split("Controller").first.singularize.constantize
+    klass ||= self.to_s.split("::").last.split("Controller").first.singularize.constantize
     klass_name = klass.to_s.tableize
-    pnam = opts[:parameter_name] || klass.to_s.tableize.singularize.gsub('/', '_')
-    nam = "@" + pnam
+    parameter_name  ||=  klass.to_s.tableize.singularize.gsub('/', '_')
+    nam = "@" + parameter_name
 
     # if the resource is nested, get the wrapping resources
     # :nested => :masterclass
     # :nested => [:supermasterclassname, :masterclassname]
     # :nested => {:supermasterclassname => SuperMasterClassName, :masterclassname => MasterClassName}
-    nested = opts[:nested].presence
+    nested = nested.presence
     nested = [nested] if nested.is_a?(String) || nested.is_a?(Symbol)
     nested = case nested
     when nil then []
@@ -22,7 +38,7 @@ module Cruddler::Controller
     else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
     end
     before_filter :cruddler_get_nested if nested
-    nested_as = opts[:nested_as] || nested.to_a.last.try(:first)
+    nested_as ||= nested.to_a.last.try(:first)
 
     # which CRUD methods are to be created?
     methods = case methods
@@ -32,22 +48,45 @@ module Cruddler::Controller
     else [*methods]
     end
 
-    rsn = opts[:resources_name].presence || self.to_s.split("::").last[0..(-11)].tableize
-    rn  = opts[:resource_name].presence  || rsn.singularize
+    resources_name ||= self.to_s.split("::").last[0..(-11)].tableize
+    resource_name  ||= resources_name.singularize
 
-    static_path_components = opts[:path_components] || self.to_s.split("::").map(&:underscore)[0..-2]
+    path_components ||= self.to_s.split("::").map(&:underscore)[0..-2]
+
+    if block_given?
+      define_method "#{parameter_name}_params" do
+        self.instance_eval &params_block
+      end
+      private "#{parameter_name}_params"
+    end
+
+    define_method :cruddler_params do
+      if defined? "#{parameter_name}_params"
+        self.send "#{parameter_name}_params"
+      else
+        raise "Either give a block to cruddler or implement method `#{parameter_name}_params`."
+      end
+    end
+    private :cruddler_params
 
     define_method :cruddler do
       @_cruddler ||= OpenStruct.new(
-          opts: opts,
-          model_name: nam,
-          klass: klass,
-          klass_name: klass_name,
-          nested: nested,
-          nested_as: nested_as,
-          parameter_name: pnam,
-          resource_name: rn,
-          resources_name: rsn
+          model_name:         nam,
+          klass:              klass,
+          klass_name:         klass_name,
+          nested:             nested,
+          nested_as:          nested_as,
+          parameter_name:     parameter_name,
+          resource_name:      resource_name,
+          resources_name:     resources_name,
+          stateful_index:     stateful_index,
+          authorize:          authorize,
+          index_path:         index_path,
+          after_destroy_path: after_destroy_path,
+          after_create_path:  after_create_path,
+          after_update_path:  after_update_path,
+          name:               name,
+          use_tabulatr:       use_tabulatr
         )
     end
     private :cruddler
@@ -83,7 +122,7 @@ module Cruddler::Controller
     alias_method :cruddler_current_object, :current_object
 
     define_method :current_path_components do |*args|
-      [static_path_components, cruddler_get_nested, args].flatten.compact
+      [path_components, cruddler_get_nested, args].flatten.compact
     end
 
     self.send :include, Cruddler::PathHelpers

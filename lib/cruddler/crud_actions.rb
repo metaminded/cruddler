@@ -4,36 +4,36 @@ module Cruddler::CrudActions
 
   # index
   def cruddler_index_action
-    models = if cruddler_find_on.respond_to? :find_for_table
-      cruddler_find_on.find_for_table(params, (cruddler.opts[:stateful_index] ? {stateful: session} : {}))
+    models = if cruddler.use_tabulatr != false && cruddler_find_on.respond_to?(:find_for_table)
+      cruddler_find_on.find_for_table(params, (cruddler.stateful_index ? {stateful: session} : {}))
     else
       cruddler_find_on.all
     end
     models.each do |m|
       authorize! :read, m
-    end if cruddler.opts[:authorize]
+    end if cruddler.authorize
     instance_variable_set(cruddler.model_name.pluralize, models)
   end
 
   # show
   def cruddler_show_action
     m = cruddler_find_on.find(params[:id])
-    authorize!(:read, m) if cruddler.opts[:authorize]
+    authorize!(:read, m) if cruddler.authorize
     instance_variable_set(cruddler.model_name, m)
   end
 
   # edit
   def cruddler_edit_action
     m = cruddler_find_on.find(params[:id])
-    authorize!(:update, m) if cruddler.opts[:authorize]
+    authorize!(:update, m) if cruddler.authorize
     instance_variable_set(cruddler.model_name, m)
   end
 
   # update
   def cruddler_update_action
     t = cruddler_find_on.find(params[:id])
-    success = t.update_attributes(params[cruddler.parameter_name])
-    authorize!(:update, t) if cruddler.opts[:authorize]
+    authorize!(:update, t) if cruddler.authorize
+    success = t.update_attributes(cruddler_params)
     instance_variable_set(cruddler.model_name, t)
     if success
       flash[:notice] = t(locale_key("update_success"))
@@ -47,7 +47,7 @@ module Cruddler::CrudActions
   # new
   def cruddler_new_action
     m = cruddler.klass.new
-    authorize!(:create, m) if cruddler.opts[:authorize]
+    authorize!(:create, m) if cruddler.authorize
     s = instance_variable_set(cruddler.model_name, m)
     cruddler.nested.to_a.last.try do |name, nklaz|
       m.send("#{cruddler.nested_as}=", instance_variable_get("@#{name}"))
@@ -56,8 +56,8 @@ module Cruddler::CrudActions
 
   # create
   def cruddler_create_action
-    t = cruddler.klass.new(params[cruddler.parameter_name])
-    authorize!(:create, t) if cruddler.opts[:authorize]
+    t = cruddler.klass.new(cruddler_params)
+    authorize!(:create, t) if cruddler.authorize
     cruddler.nested.to_a.last.try do |name, nklaz|
       t.send("#{cruddler.nested_as}=", instance_variable_get("@#{name}"))
     end
@@ -75,7 +75,7 @@ module Cruddler::CrudActions
   # delete
   def cruddler_destroy_action
     m = cruddler.klass.find(params[:id])
-    authorize!(:destroy, m) if cruddler.opts[:authorize]
+    authorize!(:destroy, m) if cruddler.authorize
     s = instance_variable_set(cruddler.model_name, m)
     s.destroy
     flash[:notice] = t(locale_key("delete_success"))
