@@ -1,4 +1,6 @@
 
 class HousesController < ApplicationController
-  cruddler :all
+  cruddler :all do
+    params.required(:house).permit(:name, :number)
+  end
 end

@@ -54,14 +54,16 @@ module Cruddler::Controller
     path_components ||= self.to_s.split("::").map(&:underscore)[0..-2]
 
     if block_given?
+      puts ">>>>   block! #{parameter_name}_params"
+
       define_method "#{parameter_name}_params" do
         self.instance_eval &params_block
       end
-      private "#{parameter_name}_params"
+      # private "#{parameter_name}_params"
     end
 
     define_method :cruddler_params do
-      if defined? "#{parameter_name}_params"
+      if self.respond_to? "#{parameter_name}_params"
         self.send "#{parameter_name}_params"
       else
         raise "Either give a block to cruddler or implement method `#{parameter_name}_params`."
