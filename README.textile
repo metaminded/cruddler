@@ -56,6 +56,60 @@ We intentionally don't offer any callbacks or the like, for typical CRUD actions
 
 BTW: If <a href="http://github.com/provideal/tabulatr">tabulatr</a> is available, the generated <tt>index</tt> action uses <tt>find_for_table</tt> instead of <tt>find</tt>.
 
+h3. Strong Parameters
+
+To use strong parameters in rails 4, you have the following options:
+
+Give block to generate house_parameters method
+
+<pre>
+  class HousesController < ApplicationController
+    cruddler :all do
+      params.required(:house).permit(:name, :number)
+    end
+  end
+</pre>
+
+Give <tt>permit_params</tt> option to implicitly define <tt>cat_params</tt> method:
+
+<tt>params.required(:cat).permit(:name)</tt>
+
+<pre>
+  class CatsController < ApplicationController
+    cruddler :all,
+      nested: 'house',
+      index_path: ->(){ house_cats_path(@house) },
+      permit_params: [:name]
+  end
+</pre>
+
+Give <tt>permit_params: :all</tt> option to implicitly define <tt>cat_params</tt> method:
+
+<tt>params.required(:parasite).permit!</tt>
+
+<pre>
+  class ParasitesController < ApplicationController
+    cruddler :all,
+      nested: ['house', 'cat'],
+      index_path: ->(){ house_cat_parasites_path(@house, @cat) },
+      permit_params: :all
+  end
+</pre>
+
+Give <tt>permit_params: ->(){ closure }</tt> option to implicitly define dynamic <tt>cat_params</tt> method:
+
+<tt>params.required(:dog).permit(&lt;evaluation of closure&gt;)</tt>
+
+<pre>
+  class DogsController < ApplicationController
+    cruddler :all,
+      nested: 'house',
+      nested_as: 'ref',
+      permit_params: ->(){ @house.id == 2 ? :name : [] }
+  end
+</pre>
+
+
 h2. Views
 
 Just implement <tt>_model_name</tt>, and <tt>_listing</tt> partials, the rest is done magically. If your edit or new actions need to be more specific, you can override with <tt>_edit_model_name</tt> or <tt>_new_model_name</tt>.

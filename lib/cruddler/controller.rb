@@ -18,6 +18,7 @@ module Cruddler::Controller
       after_update_path:  nil,
       name:               nil,
       use_tabulatr:       nil,
+      permit_params:      nil,
       &params_block)
     # get the class that's to be used if it can't be guessed from the controller name
     klass ||= self.to_s.split("::").last.split("Controller").first.singularize.constantize
@@ -54,19 +55,32 @@ module Cruddler::Controller
     path_components ||= self.to_s.split("::").map(&:underscore)[0..-2]
 
     if block_given?
-      puts ">>>>   block! #{parameter_name}_params"
-
+      raise "Don't give :permit_params option if block is given" if permit_params
       define_method "#{parameter_name}_params" do
         self.instance_eval &params_block
       end
       # private "#{parameter_name}_params"
+    elsif permit_params == :all
+      define_method "#{parameter_name}_params" do
+        params.required(parameter_name.to_sym).permit!
+      end
+    elsif permit_params.is_a? Proc
+      define_method "#{parameter_name}_params" do
+        pp = self.instance_exec(&permit_params)
+        puts pp
+        params.required(parameter_name.to_sym).permit(pp)
+      end
+    elsif permit_params
+      define_method "#{parameter_name}_params" do
+        params.required(parameter_name.to_sym).permit(permit_params)
+      end
     end
 
     define_method :cruddler_params do
       if self.respond_to? "#{parameter_name}_params"
         self.send "#{parameter_name}_params"
       else
-        raise "Either give a block to cruddler or implement method `#{parameter_name}_params`."
+        raise "Either give a block to cruddler, the :permit_params option, or implement method `#{parameter_name}_params`."
       end
     end
     private :cruddler_params
