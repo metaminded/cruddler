@@ -72,6 +72,11 @@ module Cruddler::Controller
       end
     elsif permit_params
       define_method "#{parameter_name}_params" do
+        if(klass.respond_to?(:translated_attrs))
+          permit_params = Array(permit_params).flatten
+          translatable_attrs = klass.translated_attrs.select{|a| permit_params.include?(a)}
+          permit_params += klass.translation_names_for(translatable_attrs)
+        end
         params.required(parameter_name.to_sym).permit(permit_params)
       end
     end
