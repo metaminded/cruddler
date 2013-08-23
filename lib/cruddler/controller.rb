@@ -74,13 +74,19 @@ module Cruddler::Controller
       define_method "#{parameter_name}_params" do
         params.required(parameter_name.to_sym).permit(permit_params)
       end
+    else
+      if klass.respond_to? :permitted_attributes
+        define_method "#{parameter_name}_params" do
+          params.required(parameter_name.to_sym).permit(klass.permitted_attributes)
+        end
+      end
     end
 
     define_method :cruddler_params do
       if self.respond_to? "#{parameter_name}_params"
         self.send "#{parameter_name}_params"
       else
-        raise "Either give a block to cruddler, the :permit_params option, or implement method `#{parameter_name}_params`."
+        raise "Either give a block to cruddler, the :permit_params option, add `permitted_attributes` in the model, or implement method `#{parameter_name}_params`."
       end
     end
     private :cruddler_params
