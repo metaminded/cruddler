@@ -4,7 +4,7 @@ module Cruddler::CrudActions
 
   # index
   def cruddler_index_action
-    models = if cruddler.use_tabulatr != false && cruddler_find_on.respond_to?(:find_for_table)
+    models = if cruddler.use_tabulatr != false && cruddler_find_on.respond_to?(:tabulatr)
       tabulatr_for cruddler_find_on
       # cruddler_find_on.find_for_table(params, (cruddler.stateful_index ? {stateful: session} : {}))
     else
