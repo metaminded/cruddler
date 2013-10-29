@@ -116,7 +116,7 @@ module Cruddler::Controller
           use_tabulatr:       use_tabulatr
         )
     end
-    private :cruddler
+    helper_method :cruddler
 
     define_method :cruddler_find_on do
       if !nested.present? then klass
