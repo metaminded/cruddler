@@ -8,9 +8,7 @@ module Cruddler::CrudActions
         cruddler_find_on.all
       end
       if cruddler.authorize
-        models.try :each do |m|
-          authorize! :read, m
-        end
+        authorize! :read, cruddler.klass
       end
       instance_variable_set(cruddler.model_name.pluralize, models)
     end
