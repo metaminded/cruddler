@@ -46,32 +46,40 @@ module Cruddler::Controller
     when :all then [:index, :show, :edit, :update, :new, :create, :destroy]
     when :read then [:index, :show]
     when :none then []
-    else [*methods]
+    else [*methods].flatten
     end
 
-    resources_name ||= self.to_s.split("::").last[0..(-11)].tableize
-    resource_name  ||= resources_name.singularize
+    # inlude the desired CRUD actions. There's always just one method per module
+    %w{index show edit update new create destroy}.each do |method|
+      next unless methods.member? method.to_sym
+      include "Cruddler::CrudActions::#{method.capitalize}".constantize
+    end
 
+    resources_name  ||= self.to_s.split("::").last[0..(-11)].tableize
+    resource_name   ||= resources_name.singularize
     path_components ||= self.to_s.split("::").map(&:underscore)[0..-2]
+
+    # This module will be included later on
+    mod = Module.new
 
     if block_given?
       raise "Don't give :permit_params option if block is given" if permit_params
-      define_method "#{parameter_name}_params" do
+      mod.define_method "#{parameter_name}_params", do
         self.instance_eval &params_block
       end
       # private "#{parameter_name}_params"
     elsif permit_params == :all
-      define_method "#{parameter_name}_params" do
+      mod.define_method "#{parameter_name}_params", do
         params.required(parameter_name.to_sym).permit!
       end
     elsif permit_params.is_a? Proc
-      define_method "#{parameter_name}_params" do
+      mod.define_method "#{parameter_name}_params", do
         pp = self.instance_exec(&permit_params)
         puts pp
         params.required(parameter_name.to_sym).permit(pp)
       end
     elsif permit_params
-      define_method "#{parameter_name}_params" do
+      mod.define_method "#{parameter_name}_params", do
         if(klass.respond_to?(:translated_attrs))
           permit_params = Array(permit_params).flatten
           translatable_attrs = klass.translated_attrs.select{|a| permit_params.include?(a)}
@@ -81,13 +89,13 @@ module Cruddler::Controller
       end
     else
       if klass.respond_to? :permitted_attributes
-        define_method "#{parameter_name}_params" do
+        mod.define_method "#{parameter_name}_params", do
           params.required(parameter_name.to_sym).permit(klass.permitted_attributes)
         end
       end
     end
 
-    define_method :cruddler_params do
+    mod.define_method :cruddler_params, do
       if self.respond_to? "#{parameter_name}_params"
         self.send "#{parameter_name}_params"
       else
@@ -96,7 +104,7 @@ module Cruddler::Controller
     end
     private :cruddler_params
 
-    define_method :cruddler do
+    mod.define_method :cruddler, do
       @_cruddler ||= OpenStruct.new(
           model_name:         nam,
           klass:              klass,
@@ -116,43 +124,35 @@ module Cruddler::Controller
           use_tabulatr:       use_tabulatr
         )
     end
-    helper_method :cruddler
 
-    define_method :cruddler_find_on do
+    mod.define_method :cruddler_find_on, do
       if !nested.present? then klass
       else
         (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
       end
     end
-    private :cruddler_find_on
 
-    define_method :resource_name do cruddler.resource_name end
-    define_method :resources_name do cruddler.resources_name end
-    define_method :cruddler_get_nested do
+    mod.define_method :resource_name, do cruddler.resource_name end
+    mod.define_method :resources_name, do cruddler.resources_name end
+    mod.define_method :cruddler_get_nested, do
       nested.map do |nam, nklaz|
         instance_variable_get("@#{nam}") ||
         instance_variable_set("@#{nam}", nklaz.find(params["#{nam}_id"]))
       end
     end
 
-    self.send :include, Cruddler::CrudActions
-    %w{index show edit update new create destroy}.each do |method|
-      next unless methods.member? method.to_sym
-      alias_method method, "cruddler_#{method}_action"
-      public method
-    end
-
     # helper
-    define_method :current_object do
+    mod.define_method :current_object, do
       instance_variable_get(nam)
     end
-    alias_method :cruddler_current_object, :current_object
+    mod.alias_method :cruddler_current_object, :current_object
 
-    define_method :current_path_components do |*args|
+    mod.define_method :current_path_components, do |*args|
       [path_components, cruddler_get_nested, args].flatten.compact
     end
 
     self.send :include, Cruddler::PathHelpers
+    self.send :include, mod
 
     helper_method :resource_name, :resources_name,
       :current_index_path, :current_show_path, :current_new_path,
