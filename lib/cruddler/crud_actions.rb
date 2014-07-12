@@ -78,8 +78,8 @@ module Cruddler::CrudActions
     end
   end
 
-  module Delete
-    def delete
+  module Destroy
+    def destroy
       m = cruddler.klass.find(params[:id])
       authorize!(:destroy, m) if cruddler.authorize
       s = instance_variable_set(cruddler.model_name, m)
