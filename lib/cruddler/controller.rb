@@ -64,22 +64,22 @@ module Cruddler::Controller
 
     if block_given?
       raise "Don't give :permit_params option if block is given" if permit_params
-      mod.define_method "#{parameter_name}_params", do
+      mod.define_method "#{parameter_name}_params" do
         self.instance_eval &params_block
       end
       # private "#{parameter_name}_params"
     elsif permit_params == :all
-      mod.define_method "#{parameter_name}_params", do
+      mod.define_method "#{parameter_name}_params" do
         params.required(parameter_name.to_sym).permit!
       end
     elsif permit_params.is_a? Proc
-      mod.define_method "#{parameter_name}_params", do
+      mod.define_method "#{parameter_name}_params" do
         pp = self.instance_exec(&permit_params)
         puts pp
         params.required(parameter_name.to_sym).permit(pp)
       end
     elsif permit_params
-      mod.define_method "#{parameter_name}_params", do
+      mod.define_method "#{parameter_name}_params" do
         if(klass.respond_to?(:translated_attrs))
           permit_params = Array(permit_params).flatten
           translatable_attrs = klass.translated_attrs.select{|a| permit_params.include?(a)}
@@ -89,13 +89,13 @@ module Cruddler::Controller
       end
     else
       if klass.respond_to? :permitted_attributes
-        mod.define_method "#{parameter_name}_params", do
+        mod.define_method "#{parameter_name}_params" do
           params.required(parameter_name.to_sym).permit(klass.permitted_attributes)
         end
       end
     end
 
-    mod.define_method :cruddler_params, do
+    mod.define_method :cruddler_params do
       if self.respond_to? "#{parameter_name}_params"
         self.send "#{parameter_name}_params"
       else
@@ -104,7 +104,7 @@ module Cruddler::Controller
     end
     private :cruddler_params
 
-    mod.define_method :cruddler, do
+    mod.define_method :cruddler do
       @_cruddler ||= OpenStruct.new(
           model_name:         nam,
           klass:              klass,
@@ -125,16 +125,16 @@ module Cruddler::Controller
         )
     end
 
-    mod.define_method :cruddler_find_on, do
+    mod.define_method :cruddler_find_on do
       if !nested.present? then klass
       else
         (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
       end
     end
 
-    mod.define_method :resource_name, do cruddler.resource_name end
-    mod.define_method :resources_name, do cruddler.resources_name end
-    mod.define_method :cruddler_get_nested, do
+    mod.define_method :resource_name do cruddler.resource_name end
+    mod.define_method :resources_name do cruddler.resources_name end
+    mod.define_method :cruddler_get_nested do
       nested.map do |nam, nklaz|
         instance_variable_get("@#{nam}") ||
         instance_variable_set("@#{nam}", nklaz.find(params["#{nam}_id"]))
@@ -142,12 +142,12 @@ module Cruddler::Controller
     end
 
     # helper
-    mod.define_method :current_object, do
+    mod.define_method :current_object do
       instance_variable_get(nam)
     end
     mod.alias_method :cruddler_current_object, :current_object
 
-    mod.define_method :current_path_components, do |*args|
+    mod.define_method :current_path_components do |*args|
       [path_components, cruddler_get_nested, args].flatten.compact
     end
 
