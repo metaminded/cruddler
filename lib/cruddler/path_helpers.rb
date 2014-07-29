@@ -60,7 +60,7 @@ module Cruddler::PathHelpers
     when String then s
     when :index, 'index' then current_index_path()
     when :show, 'show' then current_show_path(obj)
-    when :edit, 'edit' then current_show_path(obj)
+    when :edit, 'edit' then current_edit_path(obj)
     when :new, 'new' then current_new_path()
     when Proc
       if s.arity == 0
