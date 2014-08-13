@@ -2,13 +2,13 @@ module Cruddler::CrudActions
 
   module Index
     def index
+      if cruddler.authorize
+        authorize! :read, cruddler.klass.new
+      end
       models = if cruddler.use_tabulatr != false && cruddler_find_on.respond_to?(:tabulatr)
         tabulatr_for cruddler_find_on
       else
         cruddler_find_on.all
-      end
-      if cruddler.authorize
-        authorize! :read, cruddler.klass
       end
       instance_variable_set(cruddler.model_name.pluralize, models)
     end
