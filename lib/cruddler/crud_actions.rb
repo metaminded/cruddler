@@ -33,9 +33,12 @@ module Cruddler::CrudActions
   module Update
     def update
       t = cruddler_find_on.find(params[:id])
-      authorize!(:update, t) if cruddler.authorize
-      success = t.update_attributes(cruddler_params)
       instance_variable_set(cruddler.model_name, t)
+      if cruddler.authorize && !can?(:update, t)
+        flash[:notice] = t(locale_key("authorization_problem"))
+        return render(:edit)
+      end
+      success = t.update_attributes(cruddler_params)
       if success
         flash[:notice] = t(locale_key("update_success"))
         redirect_to after_update_path()
@@ -60,12 +63,15 @@ module Cruddler::CrudActions
   module Create
     def create
       t = cruddler.klass.new(cruddler_params)
-      authorize!(:create, t) if cruddler.authorize
+      instance_variable_set(cruddler.model_name, t)
+      if cruddler.authorize && !can?(:create, t)
+        flash[:notice] = t(locale_key("authorization_problem"))
+        return render(:new)
+      end
       cruddler.nested.to_a.last.try do |name, nklaz|
         t.send("#{cruddler.nested_as}=", instance_variable_get("@#{name}"))
       end
       success = t.save
-      instance_variable_set(cruddler.model_name, t)
       if success
         flash[:notice] = t(locale_key("create_success"))
         redirect_to after_create_path()
