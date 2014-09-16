@@ -130,6 +130,7 @@ module Cruddler::Controller
     mod.send :define_method, :resources_name do cruddler.resources_name end
     mod.send :define_method, :cruddler_get_nested do
       nested.map do |nam, nklaz|
+        return nil unless params["#{nam}_id"]
         instance_variable_get("@#{nam}") ||
         instance_variable_set("@#{nam}", nklaz.find(params["#{nam}_id"]))
       end
