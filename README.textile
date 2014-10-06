@@ -15,7 +15,7 @@ h2. Installaton
 add to your Gemfile:
 
 <pre>
-  gem 'cruddler', git: 'https://github.com/provideal/cruddler'
+  gem 'cruddler'
 </pre>
 
 and install the view-inheritance views:
@@ -54,7 +54,7 @@ h3. Options
 
 We intentionally don't offer any callbacks or the like, for typical CRUD actions are sufficiently simple to just implement them if they are non-standard. So -- It you're not happy with what cruddler generated, just implement your action 'by hand'.
 
-BTW: If <a href="http://github.com/provideal/tabulatr">tabulatr</a> is available, the generated <tt>index</tt> action uses <tt>find_for_table</tt> instead of <tt>find</tt>.
+BTW: If <a href="http://github.com/metaminded/tabulatr">tabulatr</a> is available, the generated <tt>index</tt> action uses <tt>find_for_table</tt> instead of <tt>find</tt>.
 
 h3. Strong Parameters
 
@@ -149,12 +149,12 @@ In the views and flash-messages, we use i18n, here's an example, you get the ide
 
 h3. Bugs
 
-There may be lots of bugs in cruddler, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/provideal/cruddler/issues">GitHub Bugtracker</a>.
+There may be lots of bugs in cruddler, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/metaminded/cruddler/issues">GitHub Bugtracker</a>.
 
 h2. Contributing to cruddler
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the <a href="https://github.com/provideal/cruddler/issues">issue tracker</a> to make sure someone already hasn't requested it and/or contributed it
+* Check out the <a href="https://github.com/metaminded/cruddler/issues">issue tracker</a> to make sure someone already hasn't requested it and/or contributed it
 * Fork the project
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
@@ -164,7 +164,7 @@ h2. Contributing to cruddler
 
 h2. License
 
-Copyright (c) 2010-2012 Peter Horn, <a href="http://www.provideal.net" target="_blank">Provideal GmbH</a>
+Copyright (c) 2010-2012 Peter Horn, <a href="http://www.metaminded.com" target="_blank">metaminded UG</a>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
