@@ -40,7 +40,7 @@ into your controller, or replace <tt>:all</tt> with a list of the actions you wa
 
 h3. Options
 
-* <tt>:class =&gt; </tt> the resource class, if it can't be guessed from the controller name
+* <tt>:klass =&gt; </tt> the resource class, if it can't be guessed from the controller name
 * <tt>:parameter_name =&gt; </tt> the name of the <tt>params</tt> entry, also used as the name of the instance variable generated
 * <tt>:nested =&gt; </tt> if the current resource is nested, either give the name of the nesting model, an array of the names of nesting models, or a hash <tt>{:model1 => Model1, :model2 => Model2, ...}</tt> if the name/model connection can't be guessed.
 * <tt>:nested_as =&gt; </tt> the name of the current resource inside the nesting model, if it can't be guessed. Usually necessary for polymorphic nestings
@@ -109,6 +109,17 @@ Give <tt>permit_params: ->(){ closure }</tt> option to implicitly define dynamic
   end
 </pre>
 
+h3. Dealing with non-standard queries
+
+In the standard case, cruddler uses the plain <tt>FooBar</tt> model in the <tt>FooBarController</tt>.
+If you want to change this behavior, override <tt>cruddler_find_on</tt> in your controller.
+The example below uses the unscoped model:
+
+<pre>
+def cruddler_find_on
+  FooBar.unscoped
+end
+</pre>
 
 h2. Views
 
