@@ -59,7 +59,7 @@ module Cruddler::Controller
     when Hash then nested
     else raise "expected :nested Option to get either a list of model-names or a hash name => Class"
     end
-    before_filter :cruddler_get_nested if nested
+    before_action :cruddler_get_nested if nested
     nested_as ||= nested.to_a.last.try(:first)
 
     # which CRUD methods are to be created?
