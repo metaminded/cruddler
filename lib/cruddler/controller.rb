@@ -178,7 +178,7 @@ module Cruddler::Controller
 
     helper_method :resource_name, :resources_name,
       :current_index_path, :current_show_path, :current_new_path,
-      :current_edit_path, :cruddler,
+      :current_edit_path, :cruddler, :current_object,
       :locale_key, :name_for, :current_path_components, :current_name
   end
 end
