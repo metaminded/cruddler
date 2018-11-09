@@ -24,6 +24,13 @@
 module Cruddler::ApiCrudActions
 
   module ApiCruddlerData
+    def cruddler_coerce_for_json(val)
+      case val
+      when BigDecimal then val.to_f
+      else val
+      end
+    end
+
     def cruddler_to_hash(record, attributes)
       return {} unless record
       if record.respond_to?(:map)
@@ -32,17 +39,17 @@ module Cruddler::ApiCrudActions
       res = {}
       [*attributes].each do |attribute|
         case attribute
-        when Symbol then res[attribute.to_sym] = record.send(attribute)
+        when Symbol then res[attribute.to_sym] = cruddler_coerce_for_json(record.send(attribute))
         when String
           chain = attribute.split('.')
           if chain.length == 1
-            res[attribute.to_sym] = record.send(attribute)
+            res[attribute.to_sym] = cruddler_coerce_for_json(record.send(attribute))
           else
             h = chain[0..-2].inject(res) do |a,e|
               a[e.to_sym] ||= {}
               a[e.to_sym]
             end
-            h[chain.last.to_sym] = chain.inject(record) {|a,e| a.send(e)}
+            h[chain.last.to_sym] = cruddler_coerce_for_json(chain.inject(record) {|a,e| a.send(e)})
           end
         when Hash
           attribute.each do |k,v|
