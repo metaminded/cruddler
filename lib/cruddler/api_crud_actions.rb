@@ -61,11 +61,17 @@ module Cruddler::ApiCrudActions
               end
             else
               nr = if !record.respond_to?(k) && k.to_s.end_with?('_attributes')
-                Hash[
-                  record.send(k.to_s.split('_attributes').first).map do |assoc|
-                    [assoc.id, cruddler_to_hash(assoc, v)]
-                  end
-                ]
+                rr = record.send(k.to_s.split('_attributes').first)
+                if rr.nil? then nil
+                elsif rr.respond_to?(:to_a)
+                  Hash[
+                    record.send(k.to_s.split('_attributes').first).map do |assoc|
+                      [assoc.id, cruddler_to_hash(assoc, v)]
+                    end
+                  ]
+                else
+                  cruddler_to_hash(rr, v)
+                end
               else
                 record.send(k)
                 cruddler_to_hash(nr, v)
