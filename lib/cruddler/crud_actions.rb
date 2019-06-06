@@ -63,10 +63,10 @@ module Cruddler::CrudActions
       end
       success = t.update_attributes(cruddler_params)
       if success
-        flash[:notice] = t(locale_key("update_success"))
+        flash[:notice] = t(locale_key("update_success"), title: current_name)
         redirect_to after_update_path()
       else
-        flash[:alert] = t(locale_key("update_problem"))
+        flash[:alert] = t(locale_key("update_problem"), title: current_name)
         render :edit
       end
     end
@@ -96,10 +96,10 @@ module Cruddler::CrudActions
       end
       success = t.save
       if success
-        flash[:notice] = t(locale_key("create_success"))
+        flash[:notice] = t(locale_key("create_success"), title: current_name)
         redirect_to after_create_path()
       else
-        flash[:alert] = t(locale_key("create_problem"))
+        flash[:alert] = t(locale_key("create_problem"), title: current_name)
         render :new
       end
     end
@@ -110,8 +110,13 @@ module Cruddler::CrudActions
       m = cruddler.klass.find(params[:id])
       authorize!(:destroy, m) if cruddler.authorize
       s = instance_variable_set(cruddler.model_name, m)
-      s.destroy
-      flash[:notice] = t(locale_key("delete_success"))
+      name = current_name
+      ActiveRecord::Base.transaction do
+        s.destroy
+        flash[:notice] = t(locale_key("delete_success"), title: name)
+      rescue => e
+        flash[:error] = t(locale_key("delete_problem"), title: name)
+      end
       redirect_to after_destroy_path()
     end
   end
