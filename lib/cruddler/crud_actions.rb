@@ -29,7 +29,7 @@ module Cruddler::CrudActions
         authorize! :read, cruddler.klass.new
       end
       models = if cruddler.use_tabulatr != false && cruddler_find_on.respond_to?(:tabulatr)
-        tabulatr_for cruddler_find_on
+        tabulatr_for cruddler_find_on, default_order: cruddler.default_order
       else
         cruddler_find_on.all
       end

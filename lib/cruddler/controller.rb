@@ -40,6 +40,7 @@ module Cruddler::Controller
       name:               nil,
       use_tabulatr:       nil,
       permit_params:      nil,
+      default_order:      nil,
       &params_block)
     # get the class that's to be used if it can't be guessed from the controller name
     klass ||= self.to_s.split("::").last.split("Controller").first.singularize.constantize
@@ -136,7 +137,8 @@ module Cruddler::Controller
           after_create_path:  after_create_path,
           after_update_path:  after_update_path,
           name:               name,
-          use_tabulatr:       use_tabulatr
+          use_tabulatr:       use_tabulatr,
+          default_order:      default_order
         )
     end
 
