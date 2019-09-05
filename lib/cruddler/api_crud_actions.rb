@@ -39,17 +39,17 @@ module Cruddler::ApiCrudActions
       res = {}
       [*attributes].each do |attribute|
         case attribute
-        when Symbol then res[attribute.to_sym] = cruddler_coerce_for_json(record.send(attribute))
+        when Symbol then res[attribute.to_sym] = cruddler_coerce_for_json(record.try(attribute))
         when String
           chain = attribute.split('.')
           if chain.length == 1
-            res[attribute.to_sym] = cruddler_coerce_for_json(record.send(attribute))
+            res[attribute.to_sym] = cruddler_coerce_for_json(record.try(attribute))
           else
             h = chain[0..-2].inject(res) do |a,e|
               a[e.to_sym] ||= {}
               a[e.to_sym]
             end
-            h[chain.last.to_sym] = cruddler_coerce_for_json(chain.inject(record) {|a,e| a.send(e)})
+            h[chain.last.to_sym] = cruddler_coerce_for_json(chain.inject(record) {|a,e| a.try(e)})
           end
         when Hash
           attribute.each do |k,v|
@@ -61,11 +61,11 @@ module Cruddler::ApiCrudActions
               end
             else
               nr = if !record.respond_to?(k) && k.to_s.end_with?('_attributes')
-                rr = record.send(k.to_s.split('_attributes').first)
+                rr = record.try(k.to_s.split('_attributes').first)
                 if rr.nil? then nil
                 elsif rr.respond_to?(:to_a)
                   Hash[
-                    record.send(k.to_s.split('_attributes').first).map do |assoc|
+                    record.try(k.to_s.split('_attributes').first).map do |assoc|
                       [assoc.id, cruddler_to_hash(assoc, v)]
                     end
                   ]
@@ -73,7 +73,7 @@ module Cruddler::ApiCrudActions
                   cruddler_to_hash(rr, v)
                 end
               else
-                record.send(k)
+                record.try(k)
                 cruddler_to_hash(nr, v)
               end
             end
@@ -174,7 +174,7 @@ module Cruddler::ApiCrudActions
         return cruddler_render_api_error('not permitted', 401)
       end
       cruddler.nested.to_a.last.try do |name, nklaz|
-        t.send("#{cruddler.nested_as}=", instance_variable_get("@#{name}"))
+        t.try("#{cruddler.nested_as}=", instance_variable_get("@#{name}"))
       end
       success = nil
       begin

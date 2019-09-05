@@ -88,7 +88,6 @@ module Cruddler::ApiController
     elsif edit_attributes.is_a? Proc
       mod.send :define_method, "#{parameter_name}_params" do
         pp = self.instance_exec(&edit_attributes)
-        puts pp
         params.required(parameter_name.to_sym).permit(pp)
       end
     elsif edit_attributes
