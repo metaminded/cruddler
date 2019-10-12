@@ -55,9 +55,9 @@ module Cruddler::ApiCrudActions
           attribute.each do |k,v|
             res[k.to_sym] = if v.is_a?(Proc)
               if v.arity == 0
-                v.()
+                instance_exec(&v)
               else
-                v.(record)
+                instance_exec(record, &v)
               end
             else
               nr = if !record.respond_to?(k) && k.to_s.end_with?('_attributes')
