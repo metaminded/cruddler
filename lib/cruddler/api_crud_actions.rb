@@ -64,11 +64,19 @@ module Cruddler::ApiCrudActions
                 rr = record.try(k.to_s.split('_attributes').first)
                 if rr.nil? then nil
                 elsif rr.respond_to?(:to_a)
-                  Hash[
+                  case cruddler.associations_as
+                  when :hash
+                    Hash[
+                      record.try(k.to_s.split('_attributes').first).map do |assoc|
+                        [assoc.id, cruddler_to_hash(assoc, v)]
+                      end
+                    ]
+                  when :array
                     record.try(k.to_s.split('_attributes').first).map do |assoc|
-                      [assoc.id, cruddler_to_hash(assoc, v)]
+                      cruddler_to_hash(assoc, v)
                     end
-                  ]
+                  else raise "illegal value `#{cruddler.associations_as}' for associations_as, must be :array or :hash."
+                  end
                 else
                   cruddler_to_hash(rr, v)
                 end

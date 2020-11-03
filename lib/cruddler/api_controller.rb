@@ -38,6 +38,7 @@ module Cruddler::ApiController
       order:              'asc',
       limit:              nil,
       filter:             nil,
+      associations_as:    :hash,
       &params_block)
     # get the class that's to be used if it can't be guessed from the controller name
     klass ||= self.to_s.split("::").last.split("Controller").first.singularize.constantize
@@ -135,6 +136,7 @@ module Cruddler::ApiController
           order:              order,
           limit:              limit,
           filter:             nil,
+          associations_as:    associations_as,
         )
     end
 
