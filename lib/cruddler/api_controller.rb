@@ -98,7 +98,8 @@ module Cruddler::ApiController
           translatable_attrs = klass.translated_attrs.select{|a| edit_attributes.include?(a)}
           edit_attributes += klass.translation_names_for(translatable_attrs)
         end
-        params.required(parameter_name.to_sym).permit(edit_attributes)
+        pp = edit_attributes.map{|k| ((k.is_a?(String) || k.is_a?(Symbol)) && k.to_s.end_with?('_ids')) ? {k => []} : k}
+        params.required(parameter_name.to_sym).permit(pp)
       end
     else
       if klass.respond_to? :permitted_attributes
