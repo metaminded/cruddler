@@ -64,8 +64,8 @@ module Cruddler::ApiCrudActions
                 rr = record.try(k.to_s.split('_attributes').first)
                 if rr.nil? then nil
                 elsif rr.respond_to?(:to_a)
-                  case cruddler.associations_as
-                  when :hash
+                  case try(:cruddler).try(:associations_as)
+                  when :hash, nil
                     Hash[
                       record.try(k.to_s.split('_attributes').first).map do |assoc|
                         [assoc.id, cruddler_to_hash(assoc, v)]
