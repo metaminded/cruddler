@@ -165,7 +165,8 @@ module Cruddler::Controller
     mod.send :alias_method, :cruddler_current_object, :current_object
 
     mod.send :define_method, :current_path_components do |*args|
-      [path_components, cruddler_get_nested, args].flatten.compact
+      aargs = args.map{|a| a.is_a?(String) ? a.to_sym : a}
+      [path_components.map(&:to_sym), cruddler_get_nested.map(&:to_sym), aargs].flatten.compact
     end
 
     self.send :include, Cruddler::PathHelpers
