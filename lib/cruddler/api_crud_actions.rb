@@ -160,7 +160,7 @@ module Cruddler::ApiCrudActions
       end
       success = nil
       begin
-        success = t.update_attributes(cruddler_params)
+        success = t.update(cruddler_params)
       rescue Exception => e
         return cruddler_render_api_error(e.message, 500)
       end

@@ -61,7 +61,7 @@ module Cruddler::CrudActions
         flash[:notice] = t(locale_key("authorization_problem"))
         return render(:edit)
       end
-      success = t.update_attributes(cruddler_params)
+      success = t.update(cruddler_params)
       if success
         flash[:notice] = t(locale_key("update_success"), title: current_name)
         redirect_to after_update_path()
