@@ -114,8 +114,8 @@ module Cruddler::ApiCrudActions
       filter = params[:filter].try(:permit!).try(:to_hash) || cruddler.filter || {}
       @data = cruddler_find_on
       filter.symbolize_keys.each do |k, vv|
-        k = connection.quote_column_name(k[/[\w\.]*/])
         if vv.is_a?(Hash)
+          k = connection.quote_column_name(k[/[\w\.]*/])
           vv.each do |op, v|
             case op
             when *%w{= < <= > >= <>} then @data = @data.where("#{k} #{op} ?", v)
