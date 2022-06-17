@@ -47,6 +47,7 @@ GEM
     chromedriver-helper (0.0.5)
       nokogiri
     columnize (0.3.6)
+    concurrent-ruby (1.1.10)
     database_cleaner (1.0.1)
     debugger (1.6.1)
       columnize (>= 0.3.1)
@@ -61,7 +62,8 @@ GEM
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
     hike (1.2.3)
-    i18n (0.6.4)
+    i18n (0.9.5)
+      concurrent-ruby (~> 1.0)
     id_stuffer (0.0.1)
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
