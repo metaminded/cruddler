@@ -41,6 +41,7 @@ module Cruddler::Controller
       use_tabulatr:       nil,
       permit_params:      nil,
       default_order:      nil,
+      default_scope:      nil,
       &params_block)
     # get the class that's to be used if it can't be guessed from the controller name
     klass ||= self.to_s.split("::").last.split("Controller").first.singularize.constantize
@@ -137,15 +138,23 @@ module Cruddler::Controller
           after_update_path:  after_update_path,
           name:               name,
           use_tabulatr:       use_tabulatr,
-          default_order:      default_order
+          default_order:      default_order,
+          default_scope:      default_scope,
         )
     end
 
     mod.send :define_method, :cruddler_find_on do
-      if !nested.present? then klass
+      rel = if !nested.present?
+        klass
       else
         (cruddler_get_nested.last.send(klass_name.pluralize) rescue klass)
       end
+      if default_scope && default_scope.respond_to?(:call)
+        rel = default_scope.call(rel)
+      elsif default_scope
+        rel = rel.send(default_scope)
+      end
+      rel
     end
 
     mod.send :define_method, :resource_name do cruddler.resource_name end
